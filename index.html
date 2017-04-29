@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>360&deg; Tour</title>
+    <meta name="description" content="360&deg; Tour - A-Frame">
+    <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-sky src="puydesancy.jpg" rotation="0 -130 0"></a-sky>
+
+      <a-entity camera look-controls>
+        <a-entity cursor position="0 0 -1"
+              geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+              material="color: black; shader: flat">
+        </a-entity>
+      </a-entity>
+
+      <a-entity class="hotspot" data-for-panorama="backyard.png" rotation="0 0 0"  position="5 0 -10">
+        <a-sphere class="hotspot-target" data-panorama-image="puydesancy.jpg" color="yellow" radius="0.25"></a-sphere>
+        <a-text font="kelsonsans" value="Puy de Sancy, France" width="6" position="0.25" rotation="0 0 0"></a-text>
+      </a-entity>
+
+      <a-entity class="hotspot" data-for-panorama="puydesancy.jpg" rotation="0 0 0" position="-5 0 -10">
+        <a-sphere class="hotspot-target" data-panorama-image="backyard.png" color="yellow" radius="0.25"></a-sphere>
+        <a-text font="kelsonsans" value="Backyard" width="6" position="0.25" rotation="0 0 0"></a-text>
+      </a-entity>
+    </a-scene>
+
+    <script>
+    var sky = document.querySelector('a-sky');
+    var hotspots = document.querySelectorAll('.hotspot');
+    hotspots = Array.prototype.slice.call(hotspots);
+    var selected = null;
+
+    hotspots.forEach(function (spot) {
+      var target = spot.querySelector('.hotspot-target');
+      target.addEventListener('mouseenter', function () {
+        this.setAttribute('material', {
+          color: 'green'
+        })
+        selected = this;
+      })
+      target.addEventListener('mouseleave', function () {
+        this.setAttribute('material', {
+          color: 'yellow'
+        })
+        selected = null;
+      })
+      target.addEventListener('click', function () {
+        var panorama = this.dataset.panoramaImage;
+        setActiveHotspots(panorama);
+        if (selected && panorama) {
+          sky.setAttribute('src', panorama);
+        }
+      })
+    })
+
+    function setActiveHotspots (panorama) {
+      var hotspots = document.querySelectorAll('a-entity.hotspot');
+      hotspots = Array.prototype.slice.call(hotspots);
+      hotspots.forEach(function (link) {
+        var visible = link.dataset.forPanorama == panorama ? true : false;
+        link.setAttribute('visible', visible);
+      })
+    }
+
+    setActiveHotspots(sky.getAttribute('src'));
+
+    </script>
+  </body>
+</html>
