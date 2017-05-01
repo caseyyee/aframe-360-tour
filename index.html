@@ -8,66 +8,115 @@
   </head>
   <body>
     <a-scene>
-      <a-sky src="puydesancy.jpg" rotation="0 -130 0"></a-sky>
+      <a-assets>
+        <img class="panorama" id="livingroom" src="images/livingroom.jpg">
+        <img class="panorama" id="kitchen" src="images/kitchen.jpg">
+        <img class="panorama" id="puydesancy" src="images/puydesancy.jpg">
+        <img class="panorama" id="backyard" src="images/backyard.png">
+
+        <a-mixin id="hotspot-text" font="kelsonsans" position="0 0.25 0"></a-mixin>
+        <a-mixin id="hotspot-target" geometry="primitive: sphere; radius: 0.25"></a-mixin>
+      </a-assets>
+
+      <a-tour>
+        <a-hotspot for="livingroom" to="kitchen" text="Kitchen" position="-2 0 -10"></a-hotspot>
+        <a-hotspot for="kitchen" to="livingroom" text="Living Room" position="2 0 -10"></a-hotspot>
+      </a-tour>
 
       <a-entity camera look-controls>
         <a-entity cursor position="0 0 -1"
-              geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-              material="color: black; shader: flat">
+          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+          material="color: black; shader: flat">
         </a-entity>
-      </a-entity>
-
-      <a-entity class="hotspot" data-for-panorama="backyard.png" rotation="0 0 0"  position="5 0 -10">
-        <a-sphere class="hotspot-target" data-panorama-image="puydesancy.jpg" color="yellow" radius="0.25"></a-sphere>
-        <a-text font="kelsonsans" value="Puy de Sancy, France" width="6" position="0.25" rotation="0 0 0"></a-text>
-      </a-entity>
-
-      <a-entity class="hotspot" data-for-panorama="puydesancy.jpg" rotation="0 0 0" position="-5 0 -10">
-        <a-sphere class="hotspot-target" data-panorama-image="backyard.png" color="yellow" radius="0.25"></a-sphere>
-        <a-text font="kelsonsans" value="Backyard" width="6" position="0.25" rotation="0 0 0"></a-text>
       </a-entity>
     </a-scene>
 
     <script>
-    var sky = document.querySelector('a-sky');
-    var hotspots = document.querySelectorAll('.hotspot');
-    hotspots = Array.prototype.slice.call(hotspots);
-    var selected = null;
 
-    hotspots.forEach(function (spot) {
-      var target = spot.querySelector('.hotspot-target');
-      target.addEventListener('mouseenter', function () {
-        this.setAttribute('material', {
-          color: 'green'
-        })
-        selected = this;
-      })
-      target.addEventListener('mouseleave', function () {
-        this.setAttribute('material', {
-          color: 'yellow'
-        })
-        selected = null;
-      })
-      target.addEventListener('click', function () {
-        var panorama = this.dataset.panoramaImage;
-        setActiveHotspots(panorama);
-        if (selected && panorama) {
-          sky.setAttribute('src', panorama);
+    AFRAME.registerPrimitive('a-tour', {
+      defaultComponents: {
+        tour: {}
+      },
+      mappings: {}
+    });
+
+    AFRAME.registerPrimitive('a-hotspot', {
+      defaultComponents: {
+        hotspot: {},
+        text: {},
+        mixin: 'hotspot-text'
+      },
+      // Maps HTML attributes to his ocean component's properties.
+      mappings: {
+        for: 'hotspot.for',
+        to: 'hotspot.to',
+        text: 'text.value'
+      }
+    });
+
+    const IMAGE_CLASS = '.panorama'; // Classname of images to be included in tour.
+
+    AFRAME.registerComponent('tour', {
+      schema: {
+        images: { type: 'string', default: IMAGE_CLASS}
+      },
+      init: function () {
+        var images = Array.prototype.slice.call(document.querySelectorAll(this.data.images));
+        if (images.length === 0) {
+          console.error('You need to specify at least 1 image!');
+          return;
         }
-      })
-    })
+        var start = images[0];
+        this.loadSceneId(start.getAttribute('id'));
+      },
 
-    function setActiveHotspots (panorama) {
-      var hotspots = document.querySelectorAll('a-entity.hotspot');
-      hotspots = Array.prototype.slice.call(hotspots);
-      hotspots.forEach(function (link) {
-        var visible = link.dataset.forPanorama == panorama ? true : false;
-        link.setAttribute('visible', visible);
-      })
-    }
+      loadSceneId: function(id) {
+        var image = document.querySelector('#' + id + IMAGE_CLASS);
+        this.loadImage(image.getAttribute('src'));
+        this.setHotspots(id);
+      },
 
-    setActiveHotspots(sky.getAttribute('src'));
+      loadImage: function (src) {
+        var sky = document.createElement('a-sky');
+        sky.setAttribute('src', src);
+        this.el.appendChild(sky);
+      },
 
+      setHotspots: function(id) {
+        var hotspots = Array.prototype.slice.call(this.el.querySelectorAll('a-hotspot'));
+        hotspots.forEach(function (spot) {
+          var visible = spot.getAttribute('for') == id ? true : false;
+          spot.setAttribute('visible', visible);
+        })
+      }
+    });
+
+    AFRAME.registerComponent('hotspot', {
+      schema: {
+        for: { type: 'string' },
+        to: { type: 'string' }
+      },
+
+      init: function () {
+        this.tour = document.querySelector('a-tour');
+
+        this.el.setAttribute('geometry', {
+          primitive: 'sphere',
+          radius: 0.25
+        });
+
+        this.el.setAttribute('material', {
+          color: 'yellow'
+        });
+
+        this.el.addEventListener('click', this.handleClick.bind(this));
+      },
+
+      handleClick: function () {
+        var tour = this.tour.components['tour'];
+        tour.loadSceneId(this.data.to);
+      }
+    });
     </script>
   </body>
 </html>
