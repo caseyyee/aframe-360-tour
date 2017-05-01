@@ -11,21 +11,18 @@
   <body>
     <a-scene>
       <a-assets>
-        <img class="panorama" id="livingroom" src="images/livingroom.jpg">
-        <img class="panorama" id="kitchen" src="images/kitchen.jpg">
-        <img class="panorama" id="puydesancy" src="images/puydesancy.jpg">
-        <img class="panorama" id="backyard" src="images/backyard.png">
-
-        <a-mixin id="hotspot-text" font="kelsonsans" position="0 0.25 0"></a-mixin>
-        <a-mixin id="hotspot-target" geometry="primitive: sphere; radius: 0.25" material="color: yellow"></a-mixin>
+        <img id="livingroom" class="panorama" src="images/livingroom.jpg">
+        <img id="kitchen" class="panorama" src="images/kitchen.jpg">
+        <a-mixin id="hotspot-text" font="kelsonsans" width="4" position="0 -0.3 0"></a-mixin>
+        <a-mixin id="hotspot-target" geometry="primitive: sphere; radius: 0.15" material="color: yellow"></a-mixin>
       </a-assets>
 
       <a-tour>
         <a-hotspot for="livingroom" to="kitchen" mixin="hotspot-target" position="5 0 0" rotation="0 -90 0">
-          <a-text value="Kitchen" width="5" align="center" position="0 -0.5 0"></a-text>
+          <a-text value="Kitchen" align="center" mixin="hotspot-text"></a-text>
         </a-hotspot>
         <a-hotspot for="kitchen" to="livingroom" mixin="hotspot-target" position="2 0 5" rotation="0 180 0">
-          <a-text value="Living Room" width="5" align="center" position="0 -0.5 0"></a-text>
+          <a-text value="Living Room" align="center" mixin="hotspot-text"></a-text>
         </a-hotspot>
       </a-tour>
 
