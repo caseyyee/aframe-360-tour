@@ -5,6 +5,8 @@
     <title>360&deg; Tour</title>
     <meta name="description" content="360&deg; Tour - A-Frame">
     <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+    <script src="primitives/tour.js"></script>
+    <script src="primitives/hotspot.js"></script>
   </head>
   <body>
     <a-scene>
@@ -30,93 +32,5 @@
         </a-entity>
       </a-entity>
     </a-scene>
-
-    <script>
-
-    AFRAME.registerPrimitive('a-tour', {
-      defaultComponents: {
-        tour: {}
-      },
-      mappings: {}
-    });
-
-    AFRAME.registerPrimitive('a-hotspot', {
-      defaultComponents: {
-        hotspot: {},
-        text: {},
-        mixin: 'hotspot-text'
-      },
-      // Maps HTML attributes to his ocean component's properties.
-      mappings: {
-        for: 'hotspot.for',
-        to: 'hotspot.to',
-        text: 'text.value'
-      }
-    });
-
-    const IMAGE_CLASS = '.panorama'; // Classname of images to be included in tour.
-
-    AFRAME.registerComponent('tour', {
-      schema: {
-        images: { type: 'string', default: IMAGE_CLASS}
-      },
-      init: function () {
-        var images = Array.prototype.slice.call(document.querySelectorAll(this.data.images));
-        if (images.length === 0) {
-          console.error('You need to specify at least 1 image!');
-          return;
-        }
-        var start = images[0];
-        this.loadSceneId(start.getAttribute('id'));
-      },
-
-      loadSceneId: function(id) {
-        var image = document.querySelector('#' + id + IMAGE_CLASS);
-        this.loadImage(image.getAttribute('src'));
-        this.setHotspots(id);
-      },
-
-      loadImage: function (src) {
-        var sky = document.createElement('a-sky');
-        sky.setAttribute('src', src);
-        this.el.appendChild(sky);
-      },
-
-      setHotspots: function(id) {
-        var hotspots = Array.prototype.slice.call(this.el.querySelectorAll('a-hotspot'));
-        hotspots.forEach(function (spot) {
-          var visible = spot.getAttribute('for') == id ? true : false;
-          spot.setAttribute('visible', visible);
-        })
-      }
-    });
-
-    AFRAME.registerComponent('hotspot', {
-      schema: {
-        for: { type: 'string' },
-        to: { type: 'string' }
-      },
-
-      init: function () {
-        this.tour = document.querySelector('a-tour');
-
-        this.el.setAttribute('geometry', {
-          primitive: 'sphere',
-          radius: 0.25
-        });
-
-        this.el.setAttribute('material', {
-          color: 'yellow'
-        });
-
-        this.el.addEventListener('click', this.handleClick.bind(this));
-      },
-
-      handleClick: function () {
-        var tour = this.tour.components['tour'];
-        tour.loadSceneId(this.data.to);
-      }
-    });
-    </script>
   </body>
 </html>
