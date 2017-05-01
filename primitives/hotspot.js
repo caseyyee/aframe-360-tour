@@ -1,14 +1,10 @@
 AFRAME.registerPrimitive('a-hotspot', {
   defaultComponents: {
-    hotspot: {},
-    text: {},
-    mixin: 'hotspot-text'
+    hotspot: {}
   },
-  // Maps HTML attributes to his ocean component's properties.
   mappings: {
     for: 'hotspot.for',
-    to: 'hotspot.to',
-    text: 'text.value'
+    to: 'hotspot.to'
   }
 });
 
@@ -20,16 +16,6 @@ AFRAME.registerComponent('hotspot', {
 
   init: function () {
     this.tour = document.querySelector('a-tour');
-
-    this.el.setAttribute('geometry', {
-      primitive: 'sphere',
-      radius: 0.25
-    });
-
-    this.el.setAttribute('material', {
-      color: 'yellow'
-    });
-
     this.el.addEventListener('click', this.handleClick.bind(this));
   },
 

@@ -17,12 +17,12 @@
         <img class="panorama" id="backyard" src="images/backyard.png">
 
         <a-mixin id="hotspot-text" font="kelsonsans" position="0 0.25 0"></a-mixin>
-        <a-mixin id="hotspot-target" geometry="primitive: sphere; radius: 0.25"></a-mixin>
+        <a-mixin id="hotspot-target" geometry="primitive: sphere; radius: 0.25" material="color: yellow"></a-mixin>
       </a-assets>
 
       <a-tour>
-        <a-hotspot for="livingroom" to="kitchen" text="Kitchen" position="-2 0 -10"></a-hotspot>
-        <a-hotspot for="kitchen" to="livingroom" text="Living Room" position="2 0 -10"></a-hotspot>
+        <a-hotspot for="livingroom" to="kitchen" mixin="hotspot-target" position="-2 0 -10"></a-hotspot>
+        <a-hotspot for="kitchen" to="livingroom" mixin="hotspot-target" position="2 0 -10"></a-hotspot>
       </a-tour>
 
       <a-entity camera look-controls>
