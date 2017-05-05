@@ -23,13 +23,15 @@ AFRAME.registerComponent('tour', {
 
   loadSceneId: function(id) {
     var image = document.querySelector('#' + id + IMAGE_CLASS);
-    this.loadImage(image.getAttribute('src'));
+    var rotation = image.getAttribute('rotation');
+    this.loadImage(image.getAttribute('src'), rotation);
     this.setHotspots(id);
   },
 
-  loadImage: function (src) {
+  loadImage: function (src, rotation) {
     var sky = document.createElement('a-sky');
     sky.setAttribute('src', src);
+    sky.setAttribute('rotation', rotation);
     this.el.appendChild(sky);
   },
 
