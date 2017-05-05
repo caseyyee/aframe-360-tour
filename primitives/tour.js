@@ -1,5 +1,3 @@
-const IMAGE_CLASS = '.panorama'; // Classname of images to be included in tour.
-
 AFRAME.registerPrimitive('a-tour', {
   defaultComponents: {
     tour: {}
@@ -8,11 +6,10 @@ AFRAME.registerPrimitive('a-tour', {
 });
 
 AFRAME.registerComponent('tour', {
-  schema: {
-    images: { type: 'string', default: IMAGE_CLASS}
-  },
   init: function () {
-    var images = Array.prototype.slice.call(document.querySelectorAll(this.data.images));
+    this.sky = document.createElement('a-sky');
+    this.el.appendChild(this.sky);
+    var images = Array.prototype.slice.call(this.el.querySelectorAll('a-panorama'));
     if (images.length === 0) {
       console.error('You need to specify at least 1 image!');
       return;
@@ -22,17 +19,15 @@ AFRAME.registerComponent('tour', {
   },
 
   loadSceneId: function(id) {
-    var image = document.querySelector('#' + id + IMAGE_CLASS);
-    var rotation = image.getAttribute('rotation');
-    this.loadImage(image.getAttribute('src'), rotation);
+    this.loadImage(this.el.querySelector('a-panorama#' + id));
     this.setHotspots(id);
   },
 
-  loadImage: function (src, rotation) {
-    var sky = document.createElement('a-sky');
-    sky.setAttribute('src', src);
-    sky.setAttribute('rotation', rotation);
-    this.el.appendChild(sky);
+  loadImage: function (image) {
+    var sky = this.sky;
+    sky.setAttribute('src', image.getAttribute('src'));
+    var camera = this.el.sceneEl.camera.el;
+    camera.setAttribute('rotation', image.getAttribute('rotation'));
   },
 
   setHotspots: function(id) {
