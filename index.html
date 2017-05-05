@@ -13,20 +13,20 @@
       <a-assets>
         <img id="livingroom" class="panorama" src="images/livingroom.jpg">
         <img id="kitchen" class="panorama" src="images/kitchen.jpg">
-        <a-mixin id="hotspot-text" font="kelsonsans" width="4" position="0 -0.3 0"></a-mixin>
-        <a-mixin id="hotspot-target" geometry="primitive: sphere; radius: 0.15" material="color: yellow"></a-mixin>
+        <a-mixin id="hotspot-text" text="font: exo2bold; width: 5" geometry="primitive: plane; width: 1.6; height: 0.4" material="color: black;" position="0 -0.6 0"></a-mixin>
+        <a-mixin id="hotspot-target" geometry="primitive: octahedron; radius: 0.3;" material="flatShading: true; color: rgb(255, 0, 161)"></a-mixin>
       </a-assets>
 
       <a-tour>
         <a-hotspot for="livingroom" to="kitchen" mixin="hotspot-target" position="5 0 0" rotation="0 -90 0">
-          <a-text value="Kitchen" align="center" mixin="hotspot-text"></a-text>
+          <a-text value="KITCHEN" align="center" mixin="hotspot-text"></a-text>
         </a-hotspot>
         <a-hotspot for="kitchen" to="livingroom" mixin="hotspot-target" position="2 0 5" rotation="0 180 0">
-          <a-text value="Living Room" align="center" mixin="hotspot-text"></a-text>
+          <a-text value="LIVING ROOM" align="center" mixin="hotspot-text"></a-text>
         </a-hotspot>
       </a-tour>
 
-      <a-entity camera look-controls>
+      <a-entity camera look-controls wasd-controls>
         <a-entity cursor position="0 0 -1"
           geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
           material="color: black; shader: flat">
