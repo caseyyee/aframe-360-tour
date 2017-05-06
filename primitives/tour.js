@@ -1,8 +1,7 @@
 AFRAME.registerPrimitive('a-tour', {
   defaultComponents: {
     tour: {}
-  },
-  mappings: {}
+  }
 });
 
 AFRAME.registerComponent('tour', {
