@@ -25,16 +25,6 @@ AFRAME.registerComponent('hotspot', {
   }
 });
 
-AFRAME.registerPrimitive('a-hotspot-helper', {
-  defaultComponents: {
-    'hotspot-helper': {}
-  },
-  mappings: {
-    distance: 'hotspot-helper.distance'
-  }
-});
-
-
 AFRAME.registerComponent('hotspot-helper', {
   schema: {
     distance: { type: 'number', default: 5 },
@@ -76,9 +66,11 @@ AFRAME.registerComponent('hotspot-helper', {
     // reference mesh for position.
     var geometry = new THREE.BoxGeometry( 0.1, 0.2, 0.1 );
     var material = new THREE.MeshBasicMaterial({ color: 0x00ff9c });
-    var cube = new THREE.Mesh( geometry, material );
+    var cube = new THREE.Mesh(geometry, material);
     this.cube = cube;
-    this.el.object3D.add( cube );
+    this.dolly = new THREE.Object3D();
+    this.dolly.add(this.cube);
+    this.el.object3D.add(this.dolly);
     this.updateDistance(this.data.distance);
   },
 
@@ -109,7 +101,7 @@ AFRAME.registerComponent('hotspot-helper', {
 
   tick: function () {
     var rotation = this.camera.object3D.getWorldRotation();
-    this.el.object3D.rotation.copy(rotation);
+    this.dolly.rotation.copy(rotation);
     var position = this.cube.getWorldPosition();
     var cords = this.roundTo(position.x, 3) + ' ' + this.roundTo(position.y, 3) + ' ' + this.roundTo(position.z, 3);
     this.out.innerHTML = cords;

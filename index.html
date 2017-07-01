@@ -15,8 +15,7 @@
         <a-mixin id="hotspot-text" text="font: exo2bold; width: 5" geometry="primitive: plane; width: 1.6; height: 0.4" material="color: black;" position="0 -0.6 0"></a-mixin>
         <a-mixin id="hotspot-target" geometry="primitive: octahedron; radius: 0.3;" material="flatShading: true; color: rgb(255, 0, 161)"></a-mixin>
       </a-assets>
-
-      <a-tour>
+      <a-tour hotspot-helper>
         <a-panorama id="livingroom" src="images/livingroom.jpg" rotation="0 0 0"></a-panorama>
         <a-panorama id="kitchen" src="images/kitchen.jpg" rotation="0 -90 0"></a-panorama>
 
@@ -27,8 +26,6 @@
           <a-text value="LIVING ROOM" align="center" mixin="hotspot-text"></a-text>
         </a-hotspot>
       </a-tour>
-
-      <a-hotspot-helper></a-hotspot-helper>
 
       <a-entity camera look-controls wasd-controls>
         <a-entity cursor position="0 0 -1"
