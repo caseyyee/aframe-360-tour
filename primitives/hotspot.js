@@ -11,7 +11,8 @@ AFRAME.registerPrimitive('a-hotspot', {
 AFRAME.registerComponent('hotspot', {
   schema: {
     for: { type: 'string' },
-    to: { type: 'string' }
+    to: { type: 'string' },
+    positioning: { type: 'boolean', default: false }
   },
 
   init: function () {
@@ -20,6 +21,7 @@ AFRAME.registerComponent('hotspot', {
   },
 
   handleClick: function () {
+    if (this.data.positioning) return;
     var tour = this.tour.components['tour'];
     tour.loadSceneId(this.data.to);
   }
@@ -28,7 +30,9 @@ AFRAME.registerComponent('hotspot', {
 AFRAME.registerComponent('hotspot-helper', {
   schema: {
     distance: { type: 'number', default: 5 },
-    distanceIncrement: { type: 'number', default: 0.25 }
+    distanceIncrement: { type: 'number', default: 0.25 },
+    target: { type: 'selector' },
+    size: { type: 'number', default: 0.5 }
   },
 
   init: function () {
@@ -64,18 +68,27 @@ AFRAME.registerComponent('hotspot-helper', {
     copyEl.addEventListener('click', this.copyCordinates.bind(this));
 
     // reference mesh for position.
-    var geometry = new THREE.BoxGeometry( 0.1, 0.2, 0.1 );
-    var material = new THREE.MeshBasicMaterial({ color: 0x00ff9c });
-    var cube = new THREE.Mesh(geometry, material);
-    this.cube = cube;
+    var object = new THREE.Object3D();
+    if (!this.data.target) {
+      var geometry = new THREE.OctahedronGeometry( this.data.size );
+      var material = new THREE.MeshBasicMaterial({ color: 0x00ff9c });
+      object = new THREE.Mesh(geometry, material);
+    }
+    this.targetObject = object;
+
     this.dolly = new THREE.Object3D();
-    this.dolly.add(this.cube);
+    this.dolly.add(object);
     this.el.object3D.add(this.dolly);
     this.updateDistance(this.data.distance);
+
+    // set positioning on target so that clicks are not triggered when placing hotspot.
+    if (this.data.target) {
+      this.data.target.setAttribute('hotspot', { positioning: true });
+    }
   },
 
   updateDistance: function (distance) {
-    this.cube.position.z = -distance;
+    this.targetObject.position.z = -distance;
   },
 
   roundTo: function(num, x) {
@@ -102,8 +115,12 @@ AFRAME.registerComponent('hotspot-helper', {
   tick: function () {
     var rotation = this.camera.object3D.getWorldRotation();
     this.dolly.rotation.copy(rotation);
-    var position = this.cube.getWorldPosition();
+    var position = this.targetObject.getWorldPosition();
     var cords = this.roundTo(position.x, 3) + ' ' + this.roundTo(position.y, 3) + ' ' + this.roundTo(position.z, 3);
+    var target = this.data.target;
+    if (target) {
+      target.setAttribute('position', { x: position.x, y: position.y, z: position.z });
+    }
     this.out.innerHTML = cords;
   }
 });
