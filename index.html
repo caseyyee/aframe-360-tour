@@ -15,19 +15,39 @@
         <a-mixin id="hotspot-text" text="font: exo2bold; width: 5" geometry="primitive: plane; width: 1.6; height: 0.4" material="color: black;" position="0 -0.6 0"></a-mixin>
         <a-mixin id="hotspot-target" geometry="primitive: octahedron; radius: 0.3;" material="flatShading: true; color: rgb(255, 0, 161)"></a-mixin>
       </a-assets>
-      <a-tour hotspot-helper="target: #test">
-        <a-panorama id="livingroom" src="images/livingroom.jpg" rotation="0 0 0"></a-panorama>
-        <a-panorama id="kitchen" src="images/kitchen.jpg" rotation="0 -90 0"></a-panorama>
 
-        <a-hotspot id="test" for="livingroom" to="kitchen" mixin="hotspot-target" position="5 0 0" rotation="0 -90 0">
+      <a-tour hotspot-helper="target: #test">
+        <a-panorama id="room1" src="images/room1.jpeg" rotation="0 0 0"></a-panorama>
+        <a-panorama id="room2" src="images/room2.jpeg" rotation="0 0 0"></a-panorama>
+        <a-panorama id="room3" src="images/room3.jpeg" rotation="0 0 0"></a-panorama>
+
+        <!-- Helper hotspot: isse ghuma ke sahi jagah dhundho, phir hata dena -->
+        <a-hotspot id="test" for="room1" to="room2" mixin="hotspot-target" position="5 0 0" rotation="0 -90 0">
           <a-text value="Test" align="center" mixin="hotspot-text"></a-text>
         </a-hotspot>
 
-        <a-hotspot for="livingroom" to="kitchen" mixin="hotspot-target" position="5 0 0" rotation="0 -90 0">
-          <a-text value="KITCHEN" align="center" mixin="hotspot-text"></a-text>
+        <!-- Room 1 -->
+        <a-hotspot for="room1" to="room2" mixin="hotspot-target" position="5 0 0" rotation="0 -90 0">
+          <a-text value="ROOM 2" align="center" mixin="hotspot-text"></a-text>
         </a-hotspot>
-        <a-hotspot for="kitchen" to="livingroom" mixin="hotspot-target" position="2 0 5" rotation="0 180 0">
-          <a-text value="LIVING ROOM" align="center" mixin="hotspot-text"></a-text>
+        <a-hotspot for="room1" to="room3" mixin="hotspot-target" position="-5 0 0" rotation="0 90 0">
+          <a-text value="ROOM 3" align="center" mixin="hotspot-text"></a-text>
+        </a-hotspot>
+
+        <!-- Room 2 -->
+        <a-hotspot for="room2" to="room3" mixin="hotspot-target" position="0 0 -5" rotation="0 0 0">
+          <a-text value="ROOM 3" align="center" mixin="hotspot-text"></a-text>
+        </a-hotspot>
+        <a-hotspot for="room2" to="room1" mixin="hotspot-target" position="0 0 5" rotation="0 180 0">
+          <a-text value="ROOM 1" align="center" mixin="hotspot-text"></a-text>
+        </a-hotspot>
+
+        <!-- Room 3 -->
+        <a-hotspot for="room3" to="room1" mixin="hotspot-target" position="5 0 0" rotation="0 -90 0">
+          <a-text value="ROOM 1" align="center" mixin="hotspot-text"></a-text>
+        </a-hotspot>
+        <a-hotspot for="room3" to="room2" mixin="hotspot-target" position="0 0 5" rotation="0 180 0">
+          <a-text value="ROOM 2" align="center" mixin="hotspot-text"></a-text>
         </a-hotspot>
       </a-tour>
 
